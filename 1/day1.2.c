@@ -5,8 +5,8 @@
 #include <string.h>
 
 typedef struct number {
-    char number;
-    char position;
+    int number;
+    int position;
 } number;
 
 #define NOP 0
@@ -45,16 +45,18 @@ int main() {
                 e = strchr(line, x);
                 index = (int)(e - line);
 
-                if(index < 0){
+                if(index < 0 || index > len){
                     //printf("not found!\n");
                     continue;
                 }
 
-                /*number j = {(char)x, index};
+                number j;
+		j.number = x - 48;
+		j.position = index;
                 fnumbers[pnumber] = j;
-                pnumber++;*/
+                pnumber++;
                 printf("%s", line);
-                printf("found char %c (%d) at position %d in line %d!\n", (char)x, x, index, lines);
+                printf("found char %c (%d)(%d) at position %d in line %d!\n", (char)x, x, x- 48, index, lines);
             }
 
             for(int j = 0; j < 10; j++){
@@ -64,16 +66,18 @@ int main() {
                 e = strstr(line, words[j]);
                 index = (int)(e - line);
 
-                if(index < 0){
+                if(index < 0 || index > len){
                     //printf("not found!\n");
                     continue;
-                }
+		}
 
-                /*number j = {(char)x, index};
-                fnumbers[pnumber] = j;
-                pnumber++;*/
+                number x;
+		x.number = j;
+		x.position = index;
+                fnumbers[pnumber] = x;
+                pnumber++;
                 printf("%s", line);
-                printf("found string %s at position %d in line %d!\n", words[j], index, lines);
+                printf("found string %s (%d) at position %d in line %d!\n", words[j], j, index, lines);
             }
 
     //find the number with the min and max position and assign them to first and last number
