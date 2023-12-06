@@ -5,6 +5,7 @@
 #include <string.h>
 
 #define NOP 0
+#define MAX_SIZE 100
 
 typedef struct number {
     char number;
@@ -12,7 +13,23 @@ typedef struct number {
 }
 number;
 
-int main() {
+int strinsert(char *dest, int len, const char *src, int offset) 
+{
+    printf("in strinsert!\n");
+    char temp [MAX_SIZE];
+
+    strncpy(temp, dest+offset, strlen(dest+offset));
+    strncpy(dest+offset, src, strlen(src));
+    strcat (dest+offset+strlen(src), temp);
+
+    printf("tmpstr: %s\n", temp);
+    
+    return 0;
+    
+}
+
+int main(int argc, char **argv[]) {
+    //const char* filename = argv[1];
     FILE * fp = fopen("tinput.txt", "r");
     char * line = NULL;
     size_t len = 0;
@@ -76,14 +93,8 @@ int main() {
             fnumbers[pnumber] = j;
             pnumber++;
             //printf("found char %c (%d)(%d) at position %d in line %d!\n", (char) x, x, x - 48, index, lines);
-        }
 
-        //printf("Before searching for strings\n");
-        for (int j = 0; j < 10; j++) {
-            char * e;
-            int index;
-
-            e = strstr(line, words[j]);
+            e = strrchr(line, x); //53889
             if(e == NULL){
                 continue;
             }
@@ -91,16 +102,50 @@ int main() {
             index = (int)(e - line);
 
             if (index < 0 || index > len) {
-                //printf("not found!\n");
+                // printf("not found!\n");
                 continue;
             }
 
-            number x;
-            x.number = j + 48;
-            x.position = index;
-            fnumbers[pnumber] = x;
+            number l;
+            l.number = x;
+            l.position = index;
+            fnumbers[pnumber] =l;
             pnumber++;
-            //printf("found string %s (%d) at position %d in line %d! Equivalent to: %c!\n", words[j], j, index, lines, j + 48);
+        }
+
+        //printf("Before searching for strings\n");
+        for (int j = 0; j < 10; j++) {
+            char * e;
+            int index = 0;
+            int rlength = strlen(line);
+            char* searchString;
+            strcpy(searchString, line);
+
+            while(index < len){
+                e = strstr(searchString, words[j]);
+                if(e == NULL){
+                    continue;
+                }
+
+                index = (int)(e - line);
+
+                if (index < 0 || index > len) {
+                    //printf("not found!\n");
+                    continue;
+                }
+
+                number x;
+                x.number = j + 48;
+                x.position = index;
+                fnumbers[pnumber] = x;
+                pnumber++;
+                printf("found string %s (%d) at position %d in line %d! Equivalent to: %c!\n", words[j], j, index, lines, j + 48);
+
+                rlength = rlength - index;
+                printf("rlength: %d\n", rlength);
+
+                //strinsert(searchString, rlength, searchString, index);
+            }
         }
 
         //printf("Before finding lowest and highest numbers\n");
